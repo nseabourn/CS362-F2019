@@ -124,11 +124,19 @@ int main(){
         //decide the arguments
         choice1 = rand() % 2; //boolean
         handPos = rand() % G.handCount[G.whoseTurn];
+        if(G.hand[G.whoseTurn][handPos] != baron){
+           for(int card=0; card<G.handCount; card++){
+                if(G.hand[G.whoseTurn][card] == baron){
+                    handPos = card;
+                    break;
+                }
+            }
+        }
         passed += testBaronCardEffect(choice1, &G, handPos, G.whoseTurn);
     }
 
     printf("%d of %d TESTS PASSED", passed, numTests);
     printf("IT TOOK %f SECONDS TO RUN THESE TESTS", (time(0) - t)*1000);
-    
+
     return 0;
 }
