@@ -51,6 +51,8 @@ int testBaronCardEffect(int choice1, struct gameState *pre, int handPos, int cur
 }
 
 int main(){
+    time_t t = time(0);
+    srand(time(0));
     int passed = 0;
     int numTests = 100;
     int k[10] = { adventurer, council_room, feast, gardens, mine, 
@@ -59,16 +61,11 @@ int main(){
     int v[4] = {curse, estate, duchy, province};
 
     struct gameState G;
-    int randSeed, choice1, handPos;
-    srand(time(0));
+    int choice1, handPos;
 
     //randomly initialize the gameState and check if baronCardEffect works
     for(int i=0; i<numTests; i++){
         //initialize the state randomly
-        G.coins = rand();
-        G.numActions = rand();
-        G.numBuys = rand();
-        G.playedCardCount = rand();
         for(int card=0; card<G.playedCardCount; card++){
             int rando = rand() % 17;
             if(rando < 10)
@@ -115,24 +112,23 @@ int main(){
                     G.deck[player][card] = v[rando - 13];
             }
         }
+        for(int pile = 0; pile<treasure_map; pile++){
+            G.supplyCount[pile] = rand();
+        }
+        G.coins = rand();
+        G.numActions = rand();
+        G.numBuys = rand();
+        G.playedCardCount = rand();
+        G.phase = 0;
 
         //decide the arguments
         choice1 = rand() % 2; //boolean
         handPos = rand() % G.handCount[G.whoseTurn];
         passed += testBaronCardEffect(choice1, &G, handPos, G.whoseTurn);
-
-
-
-
-        for (int j = 0; j < sizeof(struct gameState); j++) {
-            ((char*)&G)[j] = floor(Random() * 256);
-        }
-        int p = floor(Random() * 2);
-        G.deckCount[p] = floor(Random() * MAX_DECK);
-        G.discardCount[p] = floor(Random() * MAX_DECK);
-        G.handCount[p] = floor(Random() * MAX_HAND);
     }
 
     printf("%d of %d TESTS PASSED", passed, numTests);
+    printf("IT TOOK %f SECONDS TO RUN THESE TESTS", (time(0) - t)*1000);
+    
     return 0;
 }
