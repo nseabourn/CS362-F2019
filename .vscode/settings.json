@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "rngs.h": "c",
+        "dominion_helpers.h": "c"
+    }
+}
