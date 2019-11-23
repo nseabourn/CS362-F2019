@@ -12,87 +12,70 @@ int testTributeCardEffect(struct gameState* pre, int nextPlayer, int *tributeRev
     memcpy (&post, pre, sizeof(struct gameState));
     tributeCardEffect(&post, nextPlayer, tributeRevealedCards, handPos, currentPlayer);
 
-
-
-
-
-
-
-
-    //make sure tribute is put into played card pile and there is one more action and nothing changed that shouldn't have
-    if(post.numBuys != pre->numBuys || post.numActions != pre->numActions ||
-     post.playedCardCount != pre->playedCardCount + 1)
+    //make sure tribute is put into played card pile andnothing changed that shouldn't have
+    if(post.numBuys != pre->numBuys || post.playedCardCount != pre->playedCardCount + 1 ||
+    post.discardCount[currentPlayer] != pre->discardCount[currentPlayer])
         return 0;
     for(int i=0; i<treasure_map; i++){
         if(post.supplyCount[i] != pre->supplyCount[i] || post.embargoTokens[i] != pre->embargoTokens[i])
             return 0;
     }
 
-    //make sure no cards from within each player's deck, hand, and discard pile go elsewhere
-    if( post.deckCount[currentPlayer] + post.discardCount[currentPlayer] + post.handCount[currentPlayer] !=
-    pre->deckCount[currentPlayer] + pre->discardCount[currentPlayer] + pre->handCount[currentPlayer] -1 )
+    if(pre->discardCount[nextPlayer] + pre->deckCount[nextPlayer] < 2 && tributeRevealedCards[0] != -1 && tributeRevealedCards[1] != -1)
         return 0;
-    for(int i=0; i<post.numPlayers; i++){
-        if( post.deckCount[i] + post.discardCount[i] + post.handCount[i] !=
-        pre->deckCount[i] + pre->discardCount[i] + pre->handCount[i] )
-            return 0;
+    if(pre->discardCount[nextPlayer] + pre->deckCount[nextPlayer] >= 2 && (tributeRevealedCards[0] == -1 || tributeRevealedCards[1] == -1) )
+        return 0;
 
+    //no cards were revealed
+    if(tributeRevealedCards[0] == -1){
+        if(post.handCount[currentPlayer] != pre->handCount[currentPlayer] -1 ||
+        post.numActions != pre->numActions - 1 || post.coins != pre->coins)
+            return 0;
     }
-
-    //player chose to get 2 coins
-    if(choice1){
-        if(post.coins != pre->coins + 2 || post.handCount[currentPlayer] != pre->handCount[currentPlayer] - 1)
-            return 0;
-        for(int player = 0; player<post.numPlayers; player++){
-            if(player != currentPlayer && post.handCount[player] != pre->handCount[player])
-                return 0;
-            if(post.deckCount[player] != pre->deckCount[player] || post.discardCount[player] != pre->discardCount[player])
+    //only one card was revealed or two duplicate cards were revealed
+    else if(tributeRevealedCards[1] == -1 || tributeRevealedCards[0] == tributeRevealedCards[1]){
+        //victory card
+        if(tributeRevealedCards[0] >= estate && tributeRevealedCards[0] <= province){
+            if(post.coins != pre->coins || post.numActions != pre->numActions - 1 ||
+            (pre->deckCount[currentPlayer] + pre->discardCount[currentPlayer] > 0 && post.handCount[currentPlayer] == pre->handCount[currentPlayer] - 1) )
                 return 0;
         }
-    }
-    //player chose to discard hand
-    else{
-        if(post.coins != pre->coins)
-            return 0;
-
-        //didn't have to shuffle discard pile into deck
-        if(pre->deckCount[currentPlayer] >= 4){
-            if(post.deckCount[currentPlayer] != pre->deckCount[currentPlayer] - 4 ||
-            post.discardCount[currentPlayer] != pre->discardCount[currentPlayer] + pre->handCount[currentPlayer] - 1)
+        //treasure card
+        else if(tributeRevealedCards[0] >= copper && tributeRevealedCards[0] <= gold){
+            if(post.coins != pre->coins + 2 || post.numActions != pre->numActions -1 ||
+            post.handCount[currentPlayer] != pre->handCount[currentPlayer] - 1)
                 return 0;
+            
         }
-        //had to shuffle
+        //action card
         else{
-            if(post.discardCount[currentPlayer] != 0)
+            if(post.coins != pre->coins || post.numActions != pre->numActions + 1 ||
+            post.handCount[currentPlayer] != pre->handCount[currentPlayer] - 1)
                 return 0;
-            int numCards = pre->handCount[currentPlayer] + pre->deckCount[currentPlayer] + pre->discardCount[currentPlayer];
-            if(numCards > 4){
-                if(post.handCount[currentPlayer] != 4)
-                    return 0;
-            }
-            else if(post.handCount[currentPlayer] != numCards - 1)
-                    return 0;
         }
-        for(int player=0; player<post.numPlayers; player++){
-            if(player != currentPlayer){
-                if(pre->handCount[player] >= 5){
-                    if(post.handCount[player] != 4)
-                        return 0;
-                    //didn't have to shuffle discard pile into deck
-                    if(pre->deckCount[player] >= 4){
-                        if(post.deckCount[player] != pre->deckCount[player] - 4 ||
-                        post.discardCount[player] != pre->discardCount[player] + pre->handCount[player])
-                            return 0;
-                    }
-                    //had to shuffle
-                    else if(post.discardCount[player] != 0)
-                        return 0;
-                }
-                else if(post.handCount[player] != pre->handCount[player] ||
-                post.deckCount[player] != pre->deckCount[player] || post.discardCount[player] != pre->discardCount[player])
-                    return 0;
-            }
+
+    }
+    //two different cards were revealed
+    else{
+        int addCoin = 0;
+        int addAct = 0;
+        int addHand = 0;
+        for(int i=0; i<2; i++){
+            //victory card
+            if(tributeRevealedCards[0] >= estate && tributeRevealedCards[0] <= province)
+                addHand+=2;
+            //treasure card
+            else if(tributeRevealedCards[0] >= copper && tributeRevealedCards[0] <= gold)
+                addCoin+=2;
+            //action card
+            else
+                addAct+=2;
         }
+        if(addHand < pre->discardCount[currentPlayer] + pre->deckCount[currentPlayer])
+            addHand = pre->discardCount[currentPlayer] + pre->deckCount[currentPlayer];
+        if(post.coins += pre->coins + addCoin || post.numActions != pre->numActions + addAct - 1 ||
+        post.handCount[currentPlayer] != pre->handCount[currentPlayer] - 1 + addHand )
+            return 0;
     }
 
     return 1;
@@ -102,7 +85,7 @@ int main(){
     printf("TESTING tributeCardEffect()\n");
     srand(time(0));
     int passed = 0;
-    int numTests = 100000;
+    int numTests = 1000000;
     int k[10] = { adventurer, council_room, feast, gardens, mine, 
     remodel, smithy, village, minion, great_hall };
     int t[3] = {copper, silver, gold};

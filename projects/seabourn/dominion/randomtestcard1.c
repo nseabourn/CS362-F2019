@@ -50,7 +50,7 @@ int main(){
     printf("TESTING baronCardEffect()\n");
     srand(time(0));
     int passed = 0;
-    int numTests = 100000;
+    int numTests = 1000000;
     int k[10] = { adventurer, council_room, feast, gardens, mine, 
     remodel, smithy, village, baron, great_hall };
     int t[3] = {copper, silver, gold};

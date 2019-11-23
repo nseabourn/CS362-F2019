@@ -50,7 +50,7 @@ int testMinionCardEffect(int choice1, int choice2, struct gameState *pre, int ha
 
         //didn't have to shuffle discard pile into deck
         if(pre->deckCount[currentPlayer] >= 4){
-            if(post.deckCount[currentPlayer] != pre->deckCount[currentPlayer] - 4 ||
+            if(post.handCount[currentPlayer] != 4 || post.deckCount[currentPlayer] != pre->deckCount[currentPlayer] - 4 ||
             post.discardCount[currentPlayer] != pre->discardCount[currentPlayer] + pre->handCount[currentPlayer] - 1)
                 return 0;
         }
@@ -95,7 +95,7 @@ int main(){
     printf("TESTING minionCardEffect()\n");
     srand(time(0));
     int passed = 0;
-    int numTests = 100000;
+    int numTests = 1000000;
     int k[10] = { adventurer, council_room, feast, gardens, mine, 
     remodel, smithy, village, minion, great_hall };
     int t[3] = {copper, silver, gold};
