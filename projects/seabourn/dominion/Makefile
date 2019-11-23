@@ -30,12 +30,12 @@ randomtestcard2: randomtestcard2.c dominion.o rngs.o
 randomtestcard3: randomtestcard3.c dominion.o rngs.o
 	gcc -o randomtestcard3 -g randomtestcard3.c dominion.o rngs.o $(CFLAGS)
 
-randomtestresults: randomtestcard1
+randomtestresults: randomtestcard1 randomtestcard2
 	echo "Result for running random tests:\n-------------------------------" > randomtestresults.out
 	echo "-------------------------------\nrandomtestcard1:\n-------------------------------" >> randomtestresults.out
 	./randomtestcard1 >> randomtestresults.out
-	#echo "-------------------------------\nrandomtestcard2:\n-------------------------------" >> randomtestresults.out
-	#./randomtestcard2 >> randomtestresults.out
+	echo "-------------------------------\nrandomtestcard2:\n-------------------------------" >> randomtestresults.out
+	./randomtestcard2 >> randomtestresults.out
 	#echo "-------------------------------\nrandomtestcard3:\n-------------------------------" >> randomtestresults.out
 	#./randomtestcard3 >> randomtestresults.out
 	gcov -b -f dominion.c >> randomtestresults.out
@@ -46,4 +46,4 @@ player: player.c interface.o
 all: playdom player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe randomtestcard1 randomtestcard2 randomtestcard3 randomtestresults
