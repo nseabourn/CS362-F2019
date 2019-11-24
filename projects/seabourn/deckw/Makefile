@@ -55,28 +55,29 @@ unittest4: unittest4.c dominion.o rngs.o
 unittest5: unittest5.c dominion.o rngs.o
 	gcc -o unittest5 -g unittest5.c dominion.o rngs.o $(CFLAGS)
 
-unittestresults: unittest1 unittest2 unittest3 unittest4 unittest5 dominion.o rngs.o
+unittestresults: unittest1 unittest2 unittest3 dominion.o rngs.o
 	echo "Result for running my unit tests:" > tests.out
 	echo "unittest1.c:" >> unittestresults.out
 	./unittest1 >> unittestresults.out
 	#gcov bst.c >> unittestresults.out -b -f
 	echo "\n\nunittest2.c:" >> unittestresults.out
 	./unittest2 >> unittestresults.out
+	#didn't complete 3 - 5 in previous assignment
 	#gcov bst.c >> unittestresults.out -b -f
-	echo "\n\nunittest3.c:" >> unittestresults.out
-	./unittest3 >> unittestresults.out
+	#echo "\n\nunittest3.c:" >> unittestresults.out
+	#./unittest3 >> unittestresults.out
 	#gcov bst.c >> unittestresults.out -b -f
-	echo "\n\nunittest4.c:" >> unittestresults.out
-	./unittest4 >> unittestresults.out
+	#echo "\n\nunittest4.c:" >> unittestresults.out
+	#./unittest4 >> unittestresults.out
 	#gcov bst.c >> unittestresults.out -b -f
-	echo "\n\nunittest5.c:" >> unittestresults.out
-	./unittest5 >> unittestresults.out
+	#echo "\n\nunittest5.c:" >> unittestresults.out
+	#./unittest5 >> unittestresults.out
 	#gcov bst.c >> unittestresults.out -b -f
 	gcov -b -f dominion.c >> unittestresults.out
 
 test: unittestresults randomtestresults
-	./unittestresults
-	./randomtestresults
+	#./unittestresults
+	#./randomtestresults
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)

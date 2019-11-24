@@ -10,7 +10,7 @@
 #define DEBUG 0
 #define NOISY_TEST 1
 
-void testAmbassador() {
+void testAmbassador_funct() {
     // set your card array
     int k[10] = { adventurer, council_room, feast, gardens, mine, 
     remodel, smithy, village, baron, great_hall };
@@ -30,14 +30,18 @@ void testAmbassador() {
     // Positive Test: +2
     //
     memcpy (&G, &cleanSlate, sizeof(struct gameState));
-    discardHand(currPlayer, &G);
+    //discardHand(currPlayer, &G);
+     while(G.handCount[currPlayer] > 0)
+        discardCard(0, currPlayer, &G, 0);
     G.handCount[currPlayer] = 2;
     G.hand[currPlayer][0] = ambassador;
     G.hand[currPlayer][1] = minion;
     memcpy (&pre, &G, sizeof(struct gameState));
     // call the refactored function: int ambassadorCardEffect(int choice1, 
     //          int choice2, struct gameState *state, int handPos, int currentPlayer)
-    ambassadorCardEffect(1, 1, struct &G, 0, currPlayer);
+    //ambassadorCardEffect(1, 1, struct &G, 0, currPlayer);
+    ambassador_funct(&G, currPlayer, 0, 1, 1);
+
     // verify that your asserts pass, for the bugs your asserts may fail
     if(G.numActions != pre.numActions + 1
         || G.handCount[currPlayer] != pre.handCount[currPlayer] - 1
@@ -50,6 +54,6 @@ void testAmbassador() {
 }
 
 int main () {
-    testAmbassador();
+    testAmbassador_funct();
     exit(0);
 }
