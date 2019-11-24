@@ -7,10 +7,11 @@
 #include "dominion_helpers.h"
 #include "rngs.h"
 
-int testBaronCardEffect(int choice1, struct gameState *pre, int handPos, int currentPlayer){
+int testBaron_funct(int choice1, struct gameState *pre, int handPos, int currentPlayer){
     struct gameState post;
     memcpy (&post, pre, sizeof(struct gameState));
-    baronCardEffect(choice1, &post, handPos, currentPlayer);
+    //baronCardEffect(choice1, &post, handPos, currentPlayer);
+    baron_funct(&post, currentPlayer, handPos, choice1);
 
     //make sure baron is put into played card pile and there is one more buy
     if(post.numBuys != pre->numBuys + 1 || post.numActions != pre->numActions - 1 ||
@@ -47,7 +48,7 @@ int testBaronCardEffect(int choice1, struct gameState *pre, int handPos, int cur
 }
 
 int main(){
-    printf("TESTING baronCardEffect()\n");
+    printf("TESTING baron_funct()\n");
     srand(time(0));
     int passed = 0;
     int numTests = 1000000;
@@ -125,7 +126,7 @@ int main(){
         int handPos = rand() % G.handCount[G.whoseTurn];
         G.hand[G.whoseTurn][handPos] = baron;
 
-        passed += testBaronCardEffect(choice1, &G, handPos, G.whoseTurn);
+        passed += testBaron_funct(choice1, &G, handPos, G.whoseTurn);
     }
 
     printf("%d of %d TESTS PASSED\n", passed, numTests);
