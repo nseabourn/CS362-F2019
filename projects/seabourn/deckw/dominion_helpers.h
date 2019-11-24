@@ -12,6 +12,12 @@ int getCost(int cardNumber);
 int cardEffect(int card, int choice1, int choice2, int choice3,
                struct gameState *state, int handPos, int *bonus);
 
+//functions Wyatt created
 int baron_funct(struct gameState* state, int currentPlayer, int handPos, int choice1);
+int minion_funct(struct gameState* state, int currentPlayer, int handPos, int choice1, int choice2);
+int ambassador_funct(struct gameState* state, int currentPlayer, int handPos, int choice1, int choice2);
+int tribute_funct(struct gameState* state, int currentPlayer, int handPos, int nextPlayer, int tributeRevealedCards[]);
+int mine_funct(struct gameState* state, int currentPlayer, int handPos, int choice1, int choice2);
+
 
 #endif

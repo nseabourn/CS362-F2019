@@ -7,10 +7,11 @@
 #include "dominion_helpers.h"
 #include "rngs.h"
 
-int testMinionCardEffect(int choice1, int choice2, struct gameState *pre, int handPos, int currentPlayer){
+int testMinion_funct(int choice1, int choice2, struct gameState *pre, int handPos, int currentPlayer){
     struct gameState post;
     memcpy (&post, pre, sizeof(struct gameState));
-    minionCardEffect(choice1, choice2, &post, handPos, currentPlayer);
+    //minionCardEffect(choice1, choice2, &post, handPos, currentPlayer);
+    minion_funct(&post, currentPlayer, handPos, choice1, choice2);
 
     //make sure minion is put into played card pile and there is one more action and nothing changed that shouldn't have
     if(post.numBuys != pre->numBuys || post.numActions != pre->numActions ||
@@ -92,7 +93,7 @@ int testMinionCardEffect(int choice1, int choice2, struct gameState *pre, int ha
 }
 
 int main(){
-    printf("TESTING minionCardEffect()\n");
+    printf("TESTING minion_funct()\n");
     srand(time(0));
     int passed = 0;
     int numTests = 1000000;
@@ -171,7 +172,7 @@ int main(){
         int handPos = rand() % G.handCount[G.whoseTurn];
         G.hand[G.whoseTurn][handPos] = minion;
 
-        passed += testMinionCardEffect(choice1, choice2, &G, handPos, G.whoseTurn);
+        passed += testMinion_funct(choice1, choice2, &G, handPos, G.whoseTurn);
     }
 
     printf("%d of %d TESTS PASSED\n", passed, numTests);

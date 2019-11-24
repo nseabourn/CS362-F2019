@@ -7,10 +7,11 @@
 #include "dominion_helpers.h"
 #include "rngs.h"
 
-int testTributeCardEffect(struct gameState* pre, int nextPlayer, int *tributeRevealedCards, int handPos, int currentPlayer){
+int testTribute_funct(struct gameState* pre, int nextPlayer, int *tributeRevealedCards, int handPos, int currentPlayer){
     struct gameState post;
     memcpy (&post, pre, sizeof(struct gameState));
-    tributeCardEffect(&post, nextPlayer, tributeRevealedCards, handPos, currentPlayer);
+    //tributeCardEffect(&post, nextPlayer, tributeRevealedCards, handPos, currentPlayer);
+    tribute_funct(&post, currentPlayer, handPos, nextPlayer, tributeRevealedCards);
 
     //make sure tribute is put into played card pile andnothing changed that shouldn't have
     if(post.numBuys != pre->numBuys || post.playedCardCount != pre->playedCardCount + 1 ||
@@ -82,7 +83,7 @@ int testTributeCardEffect(struct gameState* pre, int nextPlayer, int *tributeRev
 }
 
 int main(){
-    printf("TESTING tributeCardEffect()\n");
+    printf("TESTING tribute_funct()\n");
     srand(time(0));
     int passed = 0;
     int numTests = 1000000;
@@ -163,7 +164,7 @@ int main(){
         G.hand[G.whoseTurn][handPos] = tribute;
         int tributeRevealedCards[2] = {-1, -1};
 
-        passed += testTributeCardEffect(&G, nextPlayer, tributeRevealedCards, handPos, G.whoseTurn);
+        passed += testTribute_funct(&G, nextPlayer, tributeRevealedCards, handPos, G.whoseTurn);
     }
 
     printf("%d of %d TESTS PASSED\n", passed, numTests);

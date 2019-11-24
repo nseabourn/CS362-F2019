@@ -10,7 +10,7 @@
 #define DEBUG 0
 #define NOISY_TEST 1
 
-void testMinion() {
+void testMinion_funct() {
     // set your card array
     int k[10] = { adventurer, council_room, feast, gardens, mine, 
     remodel, smithy, village, baron, great_hall };
@@ -23,21 +23,24 @@ void testMinion() {
     int seed = rand();
     initializeGame(2, k, seed, &cleanSlate);
     int currPlayer = cleanSlate.whoseTurn;
-    printf("Begin Testing minionCardEffect():\n");
+    printf("Begin Testing minion_funct():\n");
 
     //
     // set the state of your variables
     // Positive Test: +2
     //
     memcpy (&G, &cleanSlate, sizeof(struct gameState));
-    discardHand(currPlayer, &G);
+    //discardHand(currPlayer, &G);
+     while(G.handCount[currPlayer] > 0)
+        discardCard(0, currPlayer, &G, 0);
     G.handCount[currPlayer] = 2;
     G.hand[currPlayer][0] = minion;
     G.hand[currPlayer][1] = gold;
     memcpy (&pre, &G, sizeof(struct gameState));
     // call the refactored function: int minionCardEffect(int choice1, int choice2, 
     //                         struct gameState *state, int handPos, int currentPlayer)
-    minionCardEffect(1, 0, &G, 0, currPlayer);
+    //minionCardEffect(1, 0, &G, 0, currPlayer);
+    minion_funct(&G, currPlayer, 0, 1, 0);
     // verify that your asserts pass, for the bugs your asserts may fail
     if(G.numActions != pre.numActions + 1
         || G.handCount[currPlayer] != pre.handCount[currPlayer] - 1
@@ -50,7 +53,9 @@ void testMinion() {
     // Positive Test: discard hand, +4 cards, other players with >5 handsize discard hands and draw 4. Other player has handsize <5, deck is greater than 4
     //
     memcpy (&G, &cleanSlate, sizeof(struct gameState));
-    discardHand(currPlayer, &G);
+    //discardHand(currPlayer, &G);
+     while(G.handCount[currPlayer] > 0)
+        discardCard(0, currPlayer, &G, 0);
     G.handCount[!currPlayer] = 0;
     G.handCount[currPlayer] = 2;
     G.hand[currPlayer][0] = minion;
@@ -62,7 +67,8 @@ void testMinion() {
     memcpy (&pre, &G, sizeof(struct gameState));
     // call the refactored function: int minionCardEffect(int choice1, int choice2, 
     //                         struct gameState *state, int handPos, int currentPlayer)
-    minionCardEffect(0, 0, &G, 0, currPlayer);
+    //minionCardEffect(0, 0, &G, 0, currPlayer);
+    minion_funct(&G, currPlayer, 0, 0, 0);
     // verify that your asserts pass, for the bugs your asserts may fail
     if(G.numActions != pre.numActions
         || G.handCount[currPlayer] != 4
@@ -78,7 +84,9 @@ void testMinion() {
     // Positive Test: discard hand, +4 cards, other players with >5 handsize discard hands and draw 4. Other player has handsize >5, decks are greater than 4
     //
     memcpy (&G, &cleanSlate, sizeof(struct gameState));
-    discardHand(currPlayer, &G);
+    //discardHand(currPlayer, &G);
+     while(G.handCount[currPlayer] > 0)
+        discardCard(0, currPlayer, &G, 0);
     G.handCount[!currPlayer] = 6;
     for(int i=0; i<6; i++)
         G.hand[!currPlayer][i] = gold;
@@ -96,7 +104,8 @@ void testMinion() {
     memcpy (&pre, &G, sizeof(struct gameState));
     // call the refactored function: int minionCardEffect(int choice1, int choice2, 
     //                         struct gameState *state, int handPos, int currentPlayer)
-    minionCardEffect(0, 0, &G, 0, currPlayer);
+    //minionCardEffect(0, 0, &G, 0, currPlayer);
+    minion_funct(&G, currPlayer, 0, 0, 0);
     // verify that your asserts pass, for the bugs your asserts may fail
     if(G.numActions != pre.numActions
         || G.handCount[currPlayer] != 4
@@ -113,7 +122,9 @@ void testMinion() {
     // Positive Test: discard hand, +4 cards, deck < 4, discard > 4
     //
     memcpy (&G, &cleanSlate, sizeof(struct gameState));
-    discardHand(currPlayer, &G);
+    //discardHand(currPlayer, &G);
+     while(G.handCount[currPlayer] > 0)
+        discardCard(0, currPlayer, &G, 0);
     G.handCount[!currPlayer] = 0;
     G.handCount[currPlayer] = 2;
     G.hand[currPlayer][0] = minion;
@@ -125,7 +136,8 @@ void testMinion() {
     memcpy (&pre, &G, sizeof(struct gameState));
     // call the refactored function: int minionCardEffect(int choice1, int choice2, 
     //                         struct gameState *state, int handPos, int currentPlayer)
-    minionCardEffect(0, 0, &G, 0, currPlayer);
+    //minionCardEffect(0, 0, &G, 0, currPlayer);
+    minion_funct(&G, currPlayer, 0, 0, 0);
     // verify that your asserts pass, for the bugs your asserts may fail
     if(G.numActions != pre.numActions
         || G.handCount[currPlayer] != 4
@@ -140,7 +152,9 @@ void testMinion() {
     // Positive Test: discard hand, +4 cards, discard + deck < 4
     //
     memcpy (&G, &cleanSlate, sizeof(struct gameState));
-    discardHand(currPlayer, &G);
+    //discardHand(currPlayer, &G);
+     while(G.handCount[currPlayer] > 0)
+        discardCard(0, currPlayer, &G, 0);
     G.handCount[!currPlayer] = 0;
     G.handCount[currPlayer] = 1;
     G.hand[currPlayer][0] = minion;
@@ -149,7 +163,8 @@ void testMinion() {
     memcpy (&pre, &G, sizeof(struct gameState));
     // call the refactored function: int minionCardEffect(int choice1, int choice2, 
     //                         struct gameState *state, int handPos, int currentPlayer)
-    minionCardEffect(0, 0, &G, 0, currPlayer);
+    //minionCardEffect(0, 0, &G, 0, currPlayer);
+    minion_funct(&G, currPlayer, 0, 0, 0);
     // verify that your asserts pass, for the bugs your asserts may fail
     if(G.numActions != pre.numActions
         || G.handCount[currPlayer] != pre.discardCount[currPlayer] + pre.deckCount[currPlayer]
@@ -164,6 +179,6 @@ void testMinion() {
 }
 
 int main () {
-    testMinion();
+    testMinion_funct();
     exit(0);
 }
